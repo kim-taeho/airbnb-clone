@@ -12,6 +12,7 @@ django = "==2.2.7"
 pillow = "*"
 django-countries = "*"
 django-seed = "*"
+django-snippet = "*"
 
 [requires]
 python_version = "3.7"
