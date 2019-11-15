@@ -1,13 +1,32 @@
-from math import ceil
+from django.views.generic import ListView, DetailView
 from django.shortcuts import render
-from django.core.paginator import Paginator
+from django_countries import countries
 from . import models
 
 
-def all_rooms(request):
-    page = request.GET.get("page")
-    room_list = models.Room.objects.all()
-    paginator = Paginator(room_list, 10)
-    rooms = paginator.get_page(page)
-    return render(request, "rooms/home.html",{"rooms": rooms})
-    
+class HomeView(ListView):
+
+    """ RommView Definition """
+
+    model = models.Room
+    paginate_by = 10
+    paginate_orphans = 5
+    context_object_name = "rooms"
+
+
+class RoomDetail(DetailView):
+
+    """ RoomDetail Definition """
+
+    model = models.Room
+
+
+def search(request):
+    city = request.GET.get("city", "Anywhere")
+    city = str.capitalize(city)
+    room_types = models.RoomType.objects.all()
+    return render(
+        request,
+        "rooms/search.html",
+        {"city": city, "countries": countries, "room_types": room_types},
+    )

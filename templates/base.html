@@ -5,12 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{% block pagename %}{% endblock pagename %} | Tbnb</title>
+    <title>{% block page_title %}{% endblock page_title %} | Tbnb</title>
 </head>
 
 <body>
+    <header>
+        {% include "partials/nav.html" %}
 
-    {% include "partials/header.html" %}
+        {% block search-bar %}
+        <form method="get" action="{% url "rooms:search" %}">
+            <input  name="city" placeholder="Search by City" />
+        </form>
+        {% endblock search-bar %}
+    </header>
+
     {% block content %} {% endblock %}
     {% include "partials/footer.html" %}
 
