@@ -124,8 +124,17 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
 AUTH_USER_MODEL = "users.User"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 
 MEDIA_URL = "/media/"
+
+# Email Configuration
+EMAIN_HOST = "smtp.mailgun.org"
+EMAIN_PORT = "587"
+EMAIL_HOST_USER = os.environ.get("MAINGUN_USERNAME")
+EMAIN_HOST_PASSWORD = os.environ.get("MAINGUN_PASSWORD")
+EMAIL_FROM = "postguy@sandbox1ea0e56e2a414ba8a1a4a867a6a0b923.mailgun.org"

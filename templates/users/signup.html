@@ -2,7 +2,7 @@
 
 
 {% block page_title %}
-    Log In
+    Sign Up
 {% endblock page_title %}
 
 {% block search-bar %}
@@ -12,11 +12,11 @@
 {% block content %}
 
     {% include "partials/social_login.html" %}
-
-    <form method="POST" action="{% url 'users:login' %}">
+    
+    <form method="POST" action="{% url 'users:signup' %}">
         {% csrf_token %}
         {{form.as_p}}
-        <button>Login</button>
+        <button>Sign Up</button>
     </form>
 
 {% endblock content %}

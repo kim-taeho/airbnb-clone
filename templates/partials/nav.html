@@ -4,10 +4,27 @@
     </a>
 
     <ul>
-        <li>
-            <a href="{% url "users:login" %}">
-                LOGIN
-            </a>
-        </li>
+        {% if user.is_authenticated %}
+
+            <li>
+                <a href="{% url "users:logout" %}">
+                    LOG OUT
+                </a>
+            </li>
+
+        {% else %}
+
+            <li>
+                <a href="{% url "users:login" %}">
+                    LOG IN
+                </a>
+            </li>
+            <li>
+                <a href="{% url "users:signup" %}">
+                    SIGN UP
+                </a>
+            </li>
+
+        {% endif %}
     </ul>
     
