@@ -17,9 +17,16 @@
 
         <form method="POST" action="{% url 'users:login' %}" class="w-full">
             {% csrf_token %}
-            {{form.email}}
-            {{form.password}}
-            <button class="btn text-white bg-red-500">Login</button>
+            
+            {% if form.non_field.errors %}
+                {% for error in form.non_field.errors %}
+                    <span class="text-red-700 font-medium text-sm">{{form.non_field.errors}}</span>
+                {% endfor %}
+            {% endif %}
+
+            {% for field in form %}
+                {% include "partials/form_input.html" with field=field %}
+            {% endfor %}
         </form>
 
         <div class="mt-5">
