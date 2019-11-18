@@ -11,12 +11,37 @@
 
 {% block content %}
 
-    {% include "partials/social_login.html" %}
-    
-    <form method="POST" action="{% url 'users:signup' %}">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button>Sign Up</button>
-    </form>
+    <div class="container lg:w-5/12 md:w-1/2 xl:w-1/4 mx-auto my-10 flex flex-col items-center border p-6 border-gray-500">
 
+        {% include "partials/social_login.html" %}
+        
+        <form method="POST" action="{% url 'users:signup' %}">
+            {% csrf_token %}
+
+            {% if form.non_field.errors %}
+                {% for error in form.non_field.errors %}
+                    <span class="text-red-700 font-medium text-sm">{{form.non_field.errors}}</span>
+                {% endfor %}
+            {% endif %}
+            
+            {% for field in form %}
+                <div class="input {% if field.errors %}has_error{% endif %}">
+                    {{field}}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <span class="text-red-700 font-medium text-sm">{{field.errors}}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button class="btn bg-red-500 text-white">Sign Up</button>
+        </form>
+
+        <div class="mt-5">
+            <span>Have account?</span>
+            <a href="{% url 'users:login' %}" class="text-teal-500">Log in</a>
+        </div>
+
+    </div>
 {% endblock content %}

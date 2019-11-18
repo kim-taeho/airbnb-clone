@@ -1,30 +1,12 @@
+{% load static %}
+<ul class="flex items-center text-sm font-medium h-full">
+    {% if user.is_authenticated %}
+        <li class="nav_link hover:border-gray-600"><a class="py-10 px-5" href="{% url "users:logout" %}">LOG OUT</a></li>
 
-    <a href="{% url "core:home" %}">
-        Tbnb
-    </a>
+    {% else %}
 
-    <ul>
-        {% if user.is_authenticated %}
+        <li class="nav_link hover:border-gray-600"><a class="py-10 px-5" href="{% url "users:login" %}">LOG IN</a></li>
+        <li class="nav_link hover:border-gray-600"><a class="py-10 px-5" href="{% url "users:signup" %}">SIGN UP</a></li>
 
-            <li>
-                <a href="{% url "users:logout" %}">
-                    LOG OUT
-                </a>
-            </li>
-
-        {% else %}
-
-            <li>
-                <a href="{% url "users:login" %}">
-                    LOG IN
-                </a>
-            </li>
-            <li>
-                <a href="{% url "users:signup" %}">
-                    SIGN UP
-                </a>
-            </li>
-
-        {% endif %}
-    </ul>
-    
+    {% endif %}
+</ul>
