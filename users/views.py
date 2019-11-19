@@ -2,17 +2,18 @@ import os
 import requests
 from django.views import View
 from django.views.generic import FormView, DetailView, UpdateView
-from django.contrib.auth.views import PasswordChangeView 
+from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.forms import UserChangeForm
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.base import ContentFile
 from django.contrib import messages
-from . import forms, models
+from django.contrib.messages.views import SuccessMessageMixin
+from . import forms, models, mixins
 
 
-class LoginView(FormView):
+class LoginView(mixins.LoggedOutOnlyView, FormView):
 
     template_name = "users/login.html"
     form_class = forms.LoginForm
@@ -33,7 +34,7 @@ def log_out(request):
     return redirect(reverse("core:home"))
 
 
-class SignUpView(FormView):
+class SignUpView(mixins.LoggedOutOnlyView, FormView):
 
     template_name = "users/signup.html"
     form_class = forms.SignUpForm
@@ -134,7 +135,7 @@ class KakaoException(Exception):
 def kakao_callback(request):
     try:
         code = request.GET.get("code")
-        
+
         client_id = os.environ.get("KAKAO_ID")
         redirect_uri = "http://127.0.0.1:8000/users/login/kakao/callback"
         token_request = requests.get(
@@ -187,14 +188,14 @@ def kakao_callback(request):
 
 
 class UserProfileView(DetailView):
-    
+
     model = models.User
-    template_name='users/user_detail.html'
+    template_name = "users/user_detail.html"
     context_object_name = "user_obj"
 
 
-class UpdateProfileView(UpdateView):
-    
+class UpdateProfileView(mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
+
     model = models.User
     template_name = "users/update-profile.html"
     fields = (
@@ -206,16 +207,41 @@ class UpdateProfileView(UpdateView):
         "language",
         "currency",
     )
+    success_message = "profile updated"
 
     def get_object(self, queryset=None):
         return self.request.user
 
-    def form_valid(self, form):
-        email = form.cleaned_data.get("email")
-        self.object.username = email
-        self.object.save()
-        return super().form_valid(form)
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["first_name"].widget.attrs = {"placeholder": "First_name"}
+        form.fields["last_name"].widget.attrs = {"placeholder": "Last_name"}
+        form.fields["gender"].widget.attrs = {"placeholder": "Gender"}
+        form.fields["bio"].widget.attrs = {"placeholder": "Bio"}
+        form.fields["birthdate"].widget.attrs = {"placeholder": "BirthDate"}
+        form.fields["language"].widget.attrs = {"placeholder": "Language"}
+        form.fields["currency"].widget.attrs = {"placeholder": "Currency"}
+        return form
 
-class UpdatePassword(PasswordChangeView):
-    
+
+class UpdatePassword(
+    mixins.LoggedInOnlyView,
+    mixins.EmailLoginOnlyView,
+    SuccessMessageMixin,
+    PasswordChangeView,
+):
+
     template_name = "users/update-password.html"
+    success_message = "password updated"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["old-password"].widget.attrs = {"placeholder": "Current Password"}
+        form.fields["new-password1"].widget.attrs = {"placeholder": "New Password"}
+        form.fields["new-password2"].widget.attrs = {
+            "placeholder": "Confirm New Password"
+        }
+        return form
+
+    def get_success_url(self):
+        return self.request.user.get_absolute_url()
