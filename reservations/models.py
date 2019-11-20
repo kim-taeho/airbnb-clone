@@ -2,6 +2,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from core import models as core_models
+from . import managers
 
 
 class BookedDay(core_models.TimeStampedModel):
@@ -40,19 +41,21 @@ class Reservation(core_models.TimeStampedModel):
         "rooms.Room", related_name="reservations", on_delete=models.CASCADE
     )
 
+    objects = managers.CustomReservationManager()
+
     def __str__(self):
         return f"{self.room} - {self.check_in} "
 
     def in_progress(self):
         now = timezone.now().date()
         return now >= self.check_in and now <= self.check_out
-    
+
     in_progress.boolean = True
 
     def is_finished(self):
         now = timezone.now().date()
         return now > self.check_out
-    
+
     is_finished.boolean = True
 
     def save(self, *args, **kwargs):
@@ -60,7 +63,9 @@ class Reservation(core_models.TimeStampedModel):
             start = self.check_in
             end = self.check_out
             difference = end - start
-            existing_booked_day = BookedDay.objects.filter(day__range=(start, end)).exists()
+            existing_booked_day = BookedDay.objects.filter(
+                day__range=(start, end)
+            ).exists()
             if not existing_booked_day:
                 super().save(*args, **kwargs)
                 for i in range(difference.days + 1):
