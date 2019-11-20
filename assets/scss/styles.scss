@@ -83,4 +83,16 @@ form {
   }
 }
 
+.border-section {
+  @apply border-b border-gray-400 pb-5 mt-5;
+}
+
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 10px;
+  justify-items: center;
+}
+
 @tailwind utilities;

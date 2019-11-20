@@ -1,6 +1,19 @@
 {% load static %}
 <ul class="flex items-center text-sm font-medium h-full">
     {% if user.is_authenticated %}
+        <li class="nav_link">
+            <a href="{% url 'users:switch-hosting' %}">
+                {% if request.session.is_hosting %}
+                    Stop hosting
+                {% else %}
+                    Start hosting
+                {% endif %}
+            </a>
+        </li>
+
+        {% if request.session.is_hosting %}
+            <li class="nav_link"><a href="{% url 'rooms:create' %}">Upload Room</a></li>    
+        {% endif %}
         <li class="nav_link"><a href="{{user.get_absolute_url}}">Profile</a></li>
         <li class="nav_link hover:border-gray-600"><a class="py-10 px-5" href="{% url "users:logout" %}">LOG OUT</a></li>
     {% else %}
