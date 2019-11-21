@@ -61,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -140,3 +141,7 @@ EMAIN_HOST_PASSWORD = os.environ.get("MAINGUN_PASSWORD")
 EMAIL_FROM = "postguy@sandbox1ea0e56e2a414ba8a1a4a867a6a0b923.mailgun.org"
 
 LOGIN_URL ="/users/login"
+
+# Locale
+
+LOCALE_PATH = (os.path.join(BASE_DIR, "locale"),)

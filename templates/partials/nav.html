@@ -14,6 +14,7 @@
         {% if request.session.is_hosting %}
             <li class="nav_link"><a href="{% url 'rooms:create' %}">Upload Room</a></li>    
         {% endif %}
+        <li class="nav_link"><a href="{% url 'lists:see-favs' %}">Favs.({{user.list.rooms.count}})</a></li>
         <li class="nav_link"><a href="{{user.get_absolute_url}}">Profile</a></li>
         <li class="nav_link hover:border-gray-600"><a class="py-10 px-5" href="{% url "users:logout" %}">LOG OUT</a></li>
     {% else %}
